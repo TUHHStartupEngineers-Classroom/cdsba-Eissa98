@@ -2,88 +2,6 @@
 title: "Probability Theory"
 ---
 
-::: callout-note
-You can delete everything in here and start fresh.
-:::
-
-This is a `.qmd` file. It is plain text with special features. Any time you write just like this, it will be compiled to normal text in the website. If you put a \# in front of your text, it will create a top level-header.
-
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
-
-# Text Formatting
-
-*italics* and **bold**
-
-superscript^2^ / subscript~2~
-
-~~strikethrough~~
-
-`verbatim code`
-
-> Blockquote
-
-# Headings
-
-## Header 2
-### Header 3
-#### Header 4
-##### Header 5
-###### Header 6
-
-# Links & Images
-
-<https://quarto.org>
-
-[Quarto](https://quarto.org)
-
-![Caption](../../assets/img/elephant.png)
-
-[![Caption](../../assets/img/elephant.png)](https://quarto.org)
-
-[![Caption](../../assets/img/elephant.png)](https://quarto.org "An elephant")
-
-
-# Lists
-
-* unordered list
-    + sub-item 1
-    + sub-item 2
-        - sub-sub-item 1
-        
-*   item 2
-
-    Continued (indent 4 spaces)
-    
-    
-1. ordered list
-2. item 2
-    i) sub-item 1
-         A.  sub-sub-item 1
-         
-(@)  A list whose numbering
-
-continues after
-
-(@)  an interruption
-
-# Tables
-
-| Right | Left | Default | Center |
-|------:|:-----|---------|:------:|
-|   12  |  12  |    12   |    12  |
-|  123  |  123 |   123   |   123  |
-|    1  |    1 |     1   |     1  |
-
-# Source Code
-
-Use ``` to delimit blocks of source code:
-
-```
-code
-```
-
-Add a language to syntax highlight code blocks:
-
 Assignment I:
 
 ```{r}
@@ -101,6 +19,15 @@ p_time_and_nscope <- (1-pscope) * (1-Pnscope_time)
 p_ntime_and_scope <- pscope * (1- pscope_time)
 
 p_ntime_and_nscope <- (1 -pscope) * (1-Pnscope_time)
+
+cat("P(T ∩ S) =", p_time_and_scope, "\n")
+
+cat("P(T ∩ NS) =", p_time_and_nscope, "\n")
+
+cat("P(NT ∩ S) =", p_ntime_and_scope, "\n")
+
+cat("P(NT ∩ NS) =", p_ntime_and_scope, "\n")
+
 ```
 
 Assignment II:
@@ -109,16 +36,40 @@ Using the Venn diagram above, answer the following questions:
 
  1-What is the percentage of customers using all three devices?:
       
-      0.5%
-      
+```{r}
+p_customers_three_devices <- 0.5
+p_customers_three_devices
+```
  2-What is the percentage of customers using at least two devices?  
 
 ```{r}
 P_customers_two_devices = (7.3/100 + 3.3/100 + 8.8/100)*100
+P_customers_two_devices
 ```
 
 3-What is the percentage of customers using only one device?
 
 ```{r}
 P_customers_one_device = (27.8/100 + 10/100 + 42.3/100) * 100
+P_customers_one_device
+
+```
+Assignment III:
+
+```{r}
+p_B_A  <- 0.97
+p_B_nA <- 0.01
+p_A <- 0.04
+p_nA <- 1 - p_A
+
+p_B <- p_B_A * p_A + p_B_nA * p_nA
+
+p_nA_B <- (p_B_nA * p_nA) / p_B
+p_A_B <- (p_B_A * p_A) / p_B
+
+cat("P(B) =", p_B, "\n")
+cat("P(A'|B) =", p_nA_B, "\n")
+cat("P(A|B) =", p_A_B, "\n")
+
+cat("These results show that in case the alarm is triggered, there is a possibility of about",p_nA_B *100 ,"% that the product is flawless and a probability of",p_A_B*100, "% that the product is faulty.")
 ```
