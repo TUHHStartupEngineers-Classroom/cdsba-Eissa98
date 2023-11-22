@@ -2,6 +2,75 @@
 title: "Statistical Concepts"
 ---
 
-::: callout-note
-You can delete everything in here and start fresh.
-:::
+```{r}
+random_vars <- readRDS("D:/TU Hamburg/Semester_5/Causal Data Science for Business Analytics/Causal_Data_Science_Data/Causal_Data_Science_Data/random_vars.rds")
+View(random_vars)
+```
+
+```{r}
+n = 1000
+mean_age <- mean(random_vars[1:n,"age"])
+mean_income <- mean(random_vars[1:n,"income"])
+
+print(paste("Expected age value =", mean_age, "Expected income value =", mean_income))
+```
+
+```{r}
+age_variance <- var(random_vars[1:n,"age"])
+income_variance <- var(random_vars[1:n,"income"])
+
+print(paste("Variance age value =", age_variance, "Variance income value =", income_variance))
+
+```
+```{r}
+age_sd <- sd(random_vars[1:n,"age"])
+income_sd <- sd(random_vars[1:n,"income"])
+
+print(paste("standard deviation age value =", age_sd, "standard deviation income value =", income_sd))
+
+```
+
+2 -I do not think it makes sense to compare both values together as the income values is in thousands, however, the maximum age number is in hundreds. Therefore, they have different value domains that they can range in. 
+
+```{r}
+covariance <- cov(random_vars[1:n,"age"],random_vars[1:n,"income"])
+corelation <- cor(random_vars[1:n,"age"],random_vars[1:n,"income"])
+
+print(paste("covariance value =",covariance, "corelarion value =", corelation))
+
+```
+
+4 - correlation is easier to interpret as it is a standardized form of covariance, as its values bounded between -1 and 1. One can understand from the correlation result, that income and age are binded by a linear relation with a slope of 0.54. 
+
+
+```{r}
+library(dplyr)
+income_at_age_18 <- random_vars %>%
+  filter(age<=18)
+mean_income_at_age_18 <- mean(income_at_age_18$income)
+
+print(paste("Conditional_Expected_value:income at age<= 18:",mean_income_at_age_18))
+
+
+```
+
+```{r}
+library(dplyr)
+income_at_age_18_65 <- random_vars %>%
+  filter(age>=18 & age<=65)
+mean_income_at_age_18_65 = mean(income_at_age_18_65$income)
+
+print(paste("Conditional_Expected_value:income at age>=18 and age <= 65:",mean_income_at_age_18_65))
+
+
+```
+```{r}
+library(dplyr)
+income_at_age_65 <- random_vars %>%
+  filter(age>=65)
+mean_income_at_age_65 = mean(income_at_age_65$income)
+
+print(paste("Conditional_Expected_value:income at age >= 65:",mean_income_at_age_65))
+
+
+```
