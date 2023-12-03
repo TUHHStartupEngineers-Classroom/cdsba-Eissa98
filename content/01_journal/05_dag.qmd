@@ -5,3 +5,61 @@ title: "Directed Acyclic Graphs"
 ::: callout-note
 You can delete everything in here and start fresh.
 :::
+1-
+```{R}
+library(dagitty)
+library(ggdag)
+
+collider <- dagify(
+  P ~ S_AB ,
+  P ~ S_CD,
+  coords = list(x = c(S_CD = 3, P = 2, S_AB = 1),
+                y = c(S_CD = 1, P = 0, S_AB = 1))
+)
+
+# Plot DAG
+ggdag(collider) 
+```
+
+```{R}
+customer_sat <- readRDS("D:/TU Hamburg/Semester_5/Causal Data Science for Business Analytics/Causal_Data_Science_Data/Causal_Data_Science_Data/customer_sat.rds")
+View(customer_sat)
+
+```
+
+2.1
+```{R}
+lm_customers <- lm(satisfaction ~ follow_ups, data = customer_sat)
+summary(lm_customers)
+```
+
+
+2.2:
+```{R}
+lm_customers_account_for_subscription <- lm(satisfaction ~ follow_ups + subscription, data = customer_sat)
+summary(lm_customers_account_for_subscription)
+```
+3- It seems that the follow_ups with account to subscription has higher correlation with satisfaction, compared with follow_ups only according the adjusted R-squared value. Furthermore, the P-value of the regression between the satisfaction and the follow_ups with account to subscription is lower. Additionally, the Estimate value changed from -3.3093 to 2.1944, which change totally the relation from decreasing to increasing.
+
+
+4-
+```{R}
+library(ggplot2)
+
+customers_ncond <- ggplot(customer_sat, aes(x = satisfaction , y = follow_ups)) +
+geom_point() +
+stat_smooth(method = "lm", se = F)
+
+# Conditioning on student  
+customers_cond <- ggplot(customer_sat, aes(x = satisfaction, y = follow_ups,
+                            color = subscription, 
+                            alpha = subscription)) +
+  geom_point() +
+  stat_smooth(method = "lm", se = F) +
+  scale_alpha_manual(values = c("subscription" = 1, "no_subscription" = 0.2)) +
+  theme(legend.position = "right")
+
+# Plot both
+customers_ncond
+customers_cond
+```
