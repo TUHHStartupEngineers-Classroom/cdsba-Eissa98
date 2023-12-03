@@ -21,6 +21,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -43,6 +77,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="../../site_libs/bootstrap/bootstrap-dark.min.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -63,6 +100,9 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+
+<link href="../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="../../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
 
 
 </head>
@@ -187,6 +227,134 @@ Note
 </div>
 <div class="callout-body-container callout-body">
 <p>You can delete everything in here and start fresh.</p>
+</div>
+</div>
+<p>1-</p>
+<div class="cell" data-hash="05_dag_cache/html/unnamed-chunk-1_04df741874faf581c8dabe786d6f1e0a">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(dagitty)</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">library</span>(ggdag)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>#&gt; 
+#&gt; Attaching package: 'ggdag'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>#&gt; The following object is masked from 'package:stats':
+#&gt; 
+#&gt;     filter</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>collider <span class="ot">&lt;-</span> <span class="fu">dagify</span>(</span>
+<span id="cb4-2"><a href="#cb4-2"></a>  P <span class="sc">~</span> S_AB ,</span>
+<span id="cb4-3"><a href="#cb4-3"></a>  P <span class="sc">~</span> S_CD,</span>
+<span id="cb4-4"><a href="#cb4-4"></a>  <span class="at">coords =</span> <span class="fu">list</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="at">S_CD =</span> <span class="dv">3</span>, <span class="at">P =</span> <span class="dv">2</span>, <span class="at">S_AB =</span> <span class="dv">1</span>),</span>
+<span id="cb4-5"><a href="#cb4-5"></a>                <span class="at">y =</span> <span class="fu">c</span>(<span class="at">S_CD =</span> <span class="dv">1</span>, <span class="at">P =</span> <span class="dv">0</span>, <span class="at">S_AB =</span> <span class="dv">1</span>))</span>
+<span id="cb4-6"><a href="#cb4-6"></a>)</span>
+<span id="cb4-7"><a href="#cb4-7"></a></span>
+<span id="cb4-8"><a href="#cb4-8"></a><span class="co"># Plot DAG</span></span>
+<span id="cb4-9"><a href="#cb4-9"></a><span class="fu">ggdag</span>(collider) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="05_dag_files/figure-html/unnamed-chunk-1-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="05_dag_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-hash="05_dag_cache/html/unnamed-chunk-2_638324df8fb96cf2ba7b47ad3e0a9a4b">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>customer_sat <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"D:/TU Hamburg/Semester_5/Causal Data Science for Business Analytics/Causal_Data_Science_Data/Causal_Data_Science_Data/customer_sat.rds"</span>)</span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="fu">View</span>(customer_sat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>2.1</p>
+<div class="cell" data-hash="05_dag_cache/html/unnamed-chunk-3_f504f31727c8826d01dd25c10a11a06c">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>lm_customers <span class="ot">&lt;-</span> <span class="fu">lm</span>(satisfaction <span class="sc">~</span> follow_ups, <span class="at">data =</span> customer_sat)</span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="fu">summary</span>(lm_customers)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; 
+#&gt; Call:
+#&gt; lm(formula = satisfaction ~ follow_ups, data = customer_sat)
+#&gt; 
+#&gt; Residuals:
+#&gt;     Min      1Q  Median      3Q     Max 
+#&gt; -12.412  -5.257   1.733   4.506  12.588 
+#&gt; 
+#&gt; Coefficients:
+#&gt;             Estimate Std. Error t value Pr(&gt;|t|)    
+#&gt; (Intercept)  78.8860     4.2717  18.467 1.04e-10 ***
+#&gt; follow_ups   -3.3093     0.6618  -5.001 0.000243 ***
+#&gt; ---
+#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+#&gt; 
+#&gt; Residual standard error: 7.923 on 13 degrees of freedom
+#&gt; Multiple R-squared:  0.658,  Adjusted R-squared:  0.6316 
+#&gt; F-statistic: 25.01 on 1 and 13 DF,  p-value: 0.0002427</code></pre>
+</div>
+</div>
+<p>2.2:</p>
+<div class="cell" data-hash="05_dag_cache/html/unnamed-chunk-4_516db2bd855a316fbb2961a454b17a2e">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>lm_customers_account_for_subscription <span class="ot">&lt;-</span> <span class="fu">lm</span>(satisfaction <span class="sc">~</span> follow_ups <span class="sc">+</span> subscription, <span class="at">data =</span> customer_sat)</span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="fu">summary</span>(lm_customers_account_for_subscription)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; 
+#&gt; Call:
+#&gt; lm(formula = satisfaction ~ follow_ups + subscription, data = customer_sat)
+#&gt; 
+#&gt; Residuals:
+#&gt;     Min      1Q  Median      3Q     Max 
+#&gt; -4.3222 -2.1972  0.3167  2.2667  3.9944 
+#&gt; 
+#&gt; Coefficients:
+#&gt;                      Estimate Std. Error t value Pr(&gt;|t|)    
+#&gt; (Intercept)           26.7667     6.6804   4.007  0.00206 ** 
+#&gt; follow_ups             2.1944     0.7795   2.815  0.01682 *  
+#&gt; subscriptionPremium   44.7222     5.6213   7.956 6.88e-06 ***
+#&gt; subscriptionPremium+  18.0722     2.1659   8.344 4.37e-06 ***
+#&gt; ---
+#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+#&gt; 
+#&gt; Residual standard error: 2.958 on 11 degrees of freedom
+#&gt; Multiple R-squared:  0.9597, Adjusted R-squared:  0.9487 
+#&gt; F-statistic: 87.21 on 3 and 11 DF,  p-value: 5.956e-08</code></pre>
+</div>
+</div>
+<p>3- It seems that the follow_ups with account to subscription has higher correlation with satisfaction, compared with follow_ups only according the adjusted R-squared value. Furthermore, the P-value of the regression between the satisfaction and the follow_ups with account to subscription is lower. Additionally, the Estimate value changed from -3.3093 to 2.1944, which change totally the relation from decreasing to increasing.</p>
+<p>4-</p>
+<div class="cell" data-hash="05_dag_cache/html/unnamed-chunk-5_54fad5b7b85193d0c869cb56b9160460">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb10-2"><a href="#cb10-2"></a></span>
+<span id="cb10-3"><a href="#cb10-3"></a>customers_ncond <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(customer_sat, <span class="fu">aes</span>(<span class="at">x =</span> satisfaction , <span class="at">y =</span> follow_ups)) <span class="sc">+</span></span>
+<span id="cb10-4"><a href="#cb10-4"></a><span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb10-5"><a href="#cb10-5"></a><span class="fu">stat_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> F)</span>
+<span id="cb10-6"><a href="#cb10-6"></a></span>
+<span id="cb10-7"><a href="#cb10-7"></a><span class="co"># Conditioning on student  </span></span>
+<span id="cb10-8"><a href="#cb10-8"></a>customers_cond <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(customer_sat, <span class="fu">aes</span>(<span class="at">x =</span> satisfaction, <span class="at">y =</span> follow_ups,</span>
+<span id="cb10-9"><a href="#cb10-9"></a>                            <span class="at">color =</span> subscription, </span>
+<span id="cb10-10"><a href="#cb10-10"></a>                            <span class="at">alpha =</span> subscription)) <span class="sc">+</span></span>
+<span id="cb10-11"><a href="#cb10-11"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb10-12"><a href="#cb10-12"></a>  <span class="fu">stat_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> F) <span class="sc">+</span></span>
+<span id="cb10-13"><a href="#cb10-13"></a>  <span class="fu">scale_alpha_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"subscription"</span> <span class="ot">=</span> <span class="dv">1</span>, <span class="st">"no_subscription"</span> <span class="ot">=</span> <span class="fl">0.2</span>)) <span class="sc">+</span></span>
+<span id="cb10-14"><a href="#cb10-14"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"right"</span>)</span>
+<span id="cb10-15"><a href="#cb10-15"></a></span>
+<span id="cb10-16"><a href="#cb10-16"></a><span class="co"># Plot both</span></span>
+<span id="cb10-17"><a href="#cb10-17"></a>customers_ncond</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>#&gt; `geom_smooth()` using formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="05_dag_files/figure-html/unnamed-chunk-5-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="05_dag_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>customers_cond</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>#&gt; `geom_smooth()` using formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="05_dag_files/figure-html/unnamed-chunk-5-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="05_dag_files/figure-html/unnamed-chunk-5-2.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
 </div>
 </div>
 
@@ -542,6 +710,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
+<script>var lightboxQuarto = GLightbox({"openEffect":"zoom","closeEffect":"zoom","descPosition":"bottom","selector":".lightbox","loop":true});</script>
 
 
 
