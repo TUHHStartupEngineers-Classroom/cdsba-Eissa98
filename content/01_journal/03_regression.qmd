@@ -11,3 +11,54 @@ car_prices <- readRDS("D:/TU Hamburg/Semester_5/Causal Data Science for Business
 View(car_prices)
 
 ```
+
+
+```{R}
+dim(car_prices)
+```
+1-The data has 181 rows and  22 columns.
+
+```{R}
+head(car_prices)
+```
+
+2- The data types I could see are double and char datatypes. The numbers datatypes are double, however, string datatypes are char
+
+```{R}
+lm_price <- lm(price ~ ., data = car_prices)
+summary(lm_price)
+```
+```{R}
+confint(lm_price, level = 0.95)
+```
+3 - Factors relevant to car prices are horsepower, engine size, aspiration turbo and fuel system
+
+
+4.1 - engine size , and the data type it can take is double and the values it can take are double
+
+```{R}
+lm_one_regessor <- lm(price ~ enginesize, data = car_prices)
+summary(lm_one_regessor)
+```
+4.2- The price increases with the increase in the engine size according according to the estimate value 170.064. Therefore, the relation between the price and the enginesize is formulated as: price = 170.064 * enginesize - 8622.296
+
+```{R}
+sprintf("Adjusted R^2: %.2f", broom::glance(lm_price)$adj.r.squared)
+# AIC
+sprintf("AIC: %.2f", AIC(lm_one_regessor))
+# BIC
+sprintf("BIC: %.2f", BIC(lm_one_regessor))
+```
+4.3- According to the AIC and BIC and Adjusted R^2, it is recognized that the engine size has a statistical significance with respect to the price.
+
+
+```{R}
+library(dplyr)
+car_prices %>% 
+mutate(seat_heating = TRUE)
+```
+```{R}
+lm_all <- lm(price ~ ., data = car_prices)
+summary(lm_all)
+```
+5 - it seems that the new variable seat_heating has no effect on the price as it is all value is TRUE, therefore it did not affect the price in this sample. Therefore, it has no coefficient, 
