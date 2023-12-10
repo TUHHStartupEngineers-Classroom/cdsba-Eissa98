@@ -5,3 +5,59 @@ title: "Randomized Controlled Trials"
 ::: callout-note
 You can delete everything in here and start fresh.
 :::
+```{R}
+abtest_online <- readRDS("D:/TU Hamburg/Semester_5/Causal Data Science for Business Analytics/Causal_Data_Science_Data/Causal_Data_Science_Data/abtest_online.rds")
+View(abtest_online)
+
+```
+
+```{R}
+library(ggplot2)
+compare_covariates_purchase <-ggplot(abtest_online, aes(x=chatbot,y=purchase_amount,color = as.factor(chatbot))) +
+  stat_summary(geom = "errorbar", 
+               width = .5,
+               fun.data = "mean_se", 
+               fun.args = list(mult=1.96),
+               show.legend = F) +
+  labs(x = "chatbot", y = "purchase_amount", title = "chatbot affect on purchase amount")
+
+
+compare_covariates_previous_visits <-ggplot(abtest_online, aes(x=chatbot,y=previous_visit,color = as.factor(chatbot))) +
+  stat_summary(geom = "errorbar", 
+               width = .5,
+               fun.data = "mean_se", 
+               fun.args = list(mult=1.96),
+               show.legend = F) +
+  labs(x = "chatbot", y = "previous_visits", title = "chatbot affect on previous_visits")
+
+compare_covariates_mobile_devices <-ggplot(abtest_online, aes(x=chatbot,y=mobile_device,color = as.factor(chatbot))) +
+  stat_summary(geom = "errorbar", 
+               width = .5,
+               fun.data = "mean_se", 
+               fun.args = list(mult=1.96),
+               show.legend = F) +
+  labs(x = "chatbot", y = "mobile_devices", title = "chatbot affect on mobile_devices")
+
+compare_covariates_purchase
+compare_covariates_previous_visits
+compare_covariates_mobile_devices 
+```
+
+```{R}
+lm_chattbot_purchase <- lm(purchase_amount~chatbot, data = abtest_online)
+summary(lm_chattbot_purchase)
+```
+
+
+```{R}
+lm_chattbot_purchase <- lm(purchase_amount~chatbot * mobile_device, data = abtest_online)
+summary(lm_chattbot_purchase)
+```
+```{R}
+lm_purchase_logistics <- glm(purchase ~ chatbot, family=binomial(link='logit'), abtest_online)
+summary(lm_purchase_logistics)
+
+
+```
+
+
