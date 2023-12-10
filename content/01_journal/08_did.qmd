@@ -5,3 +5,33 @@ title: "Difference-in-Differences"
 ::: callout-note
 You can delete everything in here and start fresh.
 :::
+```{R}
+hospdd_data<- readRDS("D:/TU Hamburg/Semester_5/Causal Data Science for Business Analytics/Causal_Data_Science_Data/Causal_Data_Science_Data/hospdd.rds")
+
+View(hospdd_data)
+```
+
+```{R}
+library(dplyr)
+
+before_treatment <- hospdd_data %>%
+  filter(procedure == 0) %>% 
+  pull(satis)
+after_treatment <- hospdd_data %>%
+  filter(procedure == 1) %>% 
+  pull(satis)
+
+
+estimate_mean_satisfaction = after_treatment - before_treatment
+estimate_mean_satisfaction
+```
+
+```{R}
+summary(lm(satis ~ month+hospital, data = hospdd_data))
+summary(lm(satis ~ as.factor(month)+as.factor(hospital), data = hospdd_data))
+
+```
+
+
+
+2- it could be noticed that using month + hospital the mean estimate for all hospitals and additions to months is computed, however, for the as.factor(month) + as.factor(hospital) the relation between each month and each hospital with satis and how they actually affect satis is computed separately.
