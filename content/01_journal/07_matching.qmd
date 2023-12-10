@@ -5,3 +5,88 @@ title: "Matching and Subclassification"
 ::: callout-note
 You can delete everything in here and start fresh.
 :::
+
+```{R}
+
+membership_data<- readRDS("D:/TU Hamburg/Semester_5/Causal Data Science for Business Analytics/Causal_Data_Science_Data/Causal_Data_Science_Data/membership.rds")
+
+View(membership_data)
+
+```
+
+```{R}
+library(dagitty)
+library(ggdag)
+library(ggplot2)
+
+dag_model <- 'dag {
+  bb="0,0,1,1"
+  "card" [exposure,pos="0.25,0.2"]
+  "Membership" [pos="0.35,0.25"]
+  "avg_purch" [outcome,pos="0.35,0.2"]
+  Age [pos="0.25,0.25"]
+  "Membership" -> "card"
+  "Membership" -> "avg_purch"
+  Age -> "card"
+  Age -> "Membership"
+  Age -> "avg_purch"
+}'
+
+# DAG with adjustment sets (and custom layout)
+ggdag_adjustment_set(dag_model, shadow = T, text = F) +
+  guides(color = "none") +  # Turn off legend
+  geom_dag_text(color = NA) +
+  geom_dag_edges(edge_color = "white") +
+  geom_dag_label_repel(aes(label = name))
+```
+
+```{R}
+lm_naive <- lm(avg_purch ~ card, data = membership_data)
+summary(lm_naive)
+```
+
+```{R}
+# Load 'MatchIt' library
+library(MatchIt)
+
+# Without specifying coarsening
+exact_matching <- matchit(card ~ avg_purch,
+               data = membership_data, 
+               method = 'cem', 
+               estimand = 'ATE')
+
+summary(exact_matching)
+```
+```{R}
+nearest_neighbour <- matchit(card ~ avg_purch,
+              data = membership_data,
+              method = "nearest", 
+              distance = "mahalanobis", 
+              replace = T)
+
+
+summary(nearest_neighbour)
+
+```
+```{R}
+library(dplyr)
+propensity_score <- glm(card ~ avg_purch,
+                  data = membership_data,
+                  family = binomial(link = "logit"))
+
+membership_data <- membership_data %>%
+mutate(propensity = predict(propensity_score, type = "response"))
+
+df_ipw <- membership_data %>% mutate(
+  ipw = (card/propensity) + ((1-card) / (1-propensity)))
+
+model_ipw <- lm(avg_purch  ~ card,
+                data = df_ipw, 
+                weights = ipw)
+summary(model_ipw)
+```
+```{R}
+library(ggplot2)
+ggplot(membership_data, aes(x = propensity)) +
+geom_histogram(alpha = .8, color = "white")
+```
