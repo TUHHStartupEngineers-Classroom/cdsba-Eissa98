@@ -21,6 +21,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -43,6 +77,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="../../site_libs/bootstrap/bootstrap-dark.min.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -63,6 +100,9 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+
+<link href="../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="../../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
 
 
 </head>
@@ -189,6 +229,144 @@ Note
 <p>You can delete everything in here and start fresh.</p>
 </div>
 </div>
+<div class="cell" data-hash="10_rdd_cache/html/unnamed-chunk-1_b722ac1576c22b31091846bb4af85882">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>coupon_data<span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"D:/TU Hamburg/Semester_5/Causal Data Science for Business Analytics/Causal_Data_Science_Data/Causal_Data_Science_Data/coupon.rds"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2"></a></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="fu">View</span>(coupon_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-hash="10_rdd_cache/html/unnamed-chunk-2_232a03121e555f4035b342f5046a8ebd">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">library</span>(dplyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>#&gt; 
+#&gt; Attaching package: 'dplyr'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>#&gt; The following objects are masked from 'package:stats':
+#&gt; 
+#&gt;     filter, lag</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>#&gt; The following objects are masked from 'package:base':
+#&gt; 
+#&gt;     intersect, setdiff, setequal, union</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>c0 <span class="ot">&lt;-</span> <span class="dv">60</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a></span>
+<span id="cb6-3"><a href="#cb6-3"></a>bw <span class="ot">&lt;-</span> <span class="dv">5</span></span>
+<span id="cb6-4"><a href="#cb6-4"></a></span>
+<span id="cb6-5"><a href="#cb6-5"></a>bw1 <span class="ot">&lt;-</span> c0 <span class="sc">+</span> <span class="fu">c</span>(<span class="sc">-</span>bw<span class="sc">/</span><span class="dv">2</span>, bw<span class="sc">/</span><span class="dv">2</span>)</span>
+<span id="cb6-6"><a href="#cb6-6"></a></span>
+<span id="cb6-7"><a href="#cb6-7"></a>bw2 <span class="ot">&lt;-</span> c0 <span class="sc">+</span> <span class="fu">c</span>(<span class="sc">-</span>bw<span class="sc">*</span><span class="dv">2</span>,bw<span class="sc">*</span><span class="dv">2</span>)</span>
+<span id="cb6-8"><a href="#cb6-8"></a></span>
+<span id="cb6-9"><a href="#cb6-9"></a>bw1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; [1] 57.5 62.5</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>bw2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; [1] 50 70</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>df_bw1_below <span class="ot">&lt;-</span> coupon_data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(days_since_last <span class="sc">&gt;=</span> bw1[<span class="dv">1</span>] <span class="sc">&amp;</span> days_since_last <span class="sc">&lt;</span> c0)</span>
+<span id="cb10-2"><a href="#cb10-2"></a>df_bw1_above <span class="ot">&lt;-</span> coupon_data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(days_since_last <span class="sc">&gt;=</span> c0 <span class="sc">&amp;</span> days_since_last <span class="sc">&lt;=</span> bw1[<span class="dv">2</span>])</span>
+<span id="cb10-3"><a href="#cb10-3"></a></span>
+<span id="cb10-4"><a href="#cb10-4"></a>df_bw2_below <span class="ot">&lt;-</span> coupon_data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(days_since_last <span class="sc">&gt;=</span> bw2[<span class="dv">1</span>] <span class="sc">&amp;</span> days_since_last <span class="sc">&lt;</span> c0)</span>
+<span id="cb10-5"><a href="#cb10-5"></a>df_bw2_above <span class="ot">&lt;-</span> coupon_data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(days_since_last <span class="sc">&gt;=</span> c0 <span class="sc">&amp;</span> days_since_last <span class="sc">&lt;=</span> bw2[<span class="dv">2</span>])</span>
+<span id="cb10-6"><a href="#cb10-6"></a></span>
+<span id="cb10-7"><a href="#cb10-7"></a></span>
+<span id="cb10-8"><a href="#cb10-8"></a>df_bw1 <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(df_bw1_above, df_bw1_below)</span>
+<span id="cb10-9"><a href="#cb10-9"></a></span>
+<span id="cb10-10"><a href="#cb10-10"></a>df_bw2 <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(df_bw2_above, df_bw2_below)</span>
+<span id="cb10-11"><a href="#cb10-11"></a></span>
+<span id="cb10-12"><a href="#cb10-12"></a>model_bw1_below <span class="ot">&lt;-</span> <span class="fu">lm</span>(purchase_after <span class="sc">~</span> days_since_last, <span class="at">data =</span> df_bw1_below)</span>
+<span id="cb10-13"><a href="#cb10-13"></a>model_bw1_above <span class="ot">&lt;-</span> <span class="fu">lm</span>(purchase_after <span class="sc">~</span> days_since_last, <span class="at">data =</span> df_bw1_above)</span>
+<span id="cb10-14"><a href="#cb10-14"></a></span>
+<span id="cb10-15"><a href="#cb10-15"></a>model_bw2_below <span class="ot">&lt;-</span> <span class="fu">lm</span>(purchase_after <span class="sc">~</span> days_since_last, df_bw2_below)</span>
+<span id="cb10-16"><a href="#cb10-16"></a>model_bw2_above <span class="ot">&lt;-</span> <span class="fu">lm</span>(purchase_after <span class="sc">~</span> days_since_last, df_bw2_above)</span>
+<span id="cb10-17"><a href="#cb10-17"></a></span>
+<span id="cb10-18"><a href="#cb10-18"></a>y_b1_0 <span class="ot">&lt;-</span> <span class="fu">predict</span>(model_bw1_below, <span class="fu">tibble</span>(<span class="at">days_since_last =</span> c0))</span>
+<span id="cb10-19"><a href="#cb10-19"></a>y_b1_1 <span class="ot">&lt;-</span> <span class="fu">predict</span>(model_bw1_above, <span class="fu">tibble</span>(<span class="at">days_since_last =</span> c0))</span>
+<span id="cb10-20"><a href="#cb10-20"></a></span>
+<span id="cb10-21"><a href="#cb10-21"></a>late_b1<span class="ot">&lt;-</span>y_b1_1 <span class="sc">-</span> y_b1_0</span>
+<span id="cb10-22"><a href="#cb10-22"></a></span>
+<span id="cb10-23"><a href="#cb10-23"></a>y_b2_0 <span class="ot">&lt;-</span> <span class="fu">predict</span>(model_bw2_below, <span class="fu">tibble</span>(<span class="at">days_since_last =</span> c0))</span>
+<span id="cb10-24"><a href="#cb10-24"></a>y_b2_1 <span class="ot">&lt;-</span> <span class="fu">predict</span>(model_bw2_above, <span class="fu">tibble</span>(<span class="at">days_since_last =</span> c0))</span>
+<span id="cb10-25"><a href="#cb10-25"></a></span>
+<span id="cb10-26"><a href="#cb10-26"></a>late_b2<span class="ot">&lt;-</span> y_b2_1 <span class="sc">-</span> y_b2_0</span>
+<span id="cb10-27"><a href="#cb10-27"></a></span>
+<span id="cb10-28"><a href="#cb10-28"></a><span class="fu">sprintf</span>(<span class="st">"LATE1: %.2f"</span>, late_b1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; [1] "LATE1: 7.36"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="fu">sprintf</span>(<span class="st">"LATE2: %.2f"</span>, late_b2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; [1] "LATE2: 9.51"</code></pre>
+</div>
+</div>
+<div class="cell" data-hash="10_rdd_cache/html/unnamed-chunk-3_66bbcc0900f8b8b523b60a9f29eee667">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>shipping_data<span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"D:/TU Hamburg/Semester_5/Causal Data Science for Business Analytics/Causal_Data_Science_Data/Causal_Data_Science_Data/shipping.rds"</span>)</span>
+<span id="cb14-2"><a href="#cb14-2"></a></span>
+<span id="cb14-3"><a href="#cb14-3"></a><span class="fu">View</span>(shipping_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-hash="10_rdd_cache/html/unnamed-chunk-4_ba2bfd66504d08e42584dad2b5e1c76c">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="fu">library</span>(rddensity)</span>
+<span id="cb15-2"><a href="#cb15-2"></a></span>
+<span id="cb15-3"><a href="#cb15-3"></a>c1 <span class="ot">=</span> <span class="dv">30</span></span>
+<span id="cb15-4"><a href="#cb15-4"></a></span>
+<span id="cb15-5"><a href="#cb15-5"></a>rddd <span class="ot">&lt;-</span> <span class="fu">rddensity</span>(shipping_data<span class="sc">$</span>purchase_amount, <span class="at">c =</span> c1)</span>
+<span id="cb15-6"><a href="#cb15-6"></a><span class="fu">summary</span>(rddd)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; 
+#&gt; Manipulation testing using local polynomial density estimation.
+#&gt; 
+#&gt; Number of obs =       6666
+#&gt; Model =               unrestricted
+#&gt; Kernel =              triangular
+#&gt; BW method =           estimated
+#&gt; VCE method =          jackknife
+#&gt; 
+#&gt; c = 30                Left of c           Right of c          
+#&gt; Number of obs         3088                3578                
+#&gt; Eff. Number of obs    2221                1955                
+#&gt; Order est. (p)        2                   2                   
+#&gt; Order bias (q)        3                   3                   
+#&gt; BW est. (h)           22.909              20.394              
+#&gt; 
+#&gt; Method                T                   P &gt; |T|             
+#&gt; Robust                5.9855              0</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>#&gt; Warning in summary.CJMrddensity(rddd): There are repeated observations. Point
+#&gt; estimates and standard errors have been adjusted. Use option massPoints=FALSE
+#&gt; to suppress this feature.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; 
+#&gt; P-values of binomial tests (H0: p=0.5).
+#&gt; 
+#&gt; Window Length / 2          &lt;c     &gt;=c    P&gt;|T|
+#&gt; 0.261                      20      26    0.4614
+#&gt; 0.522                      41      65    0.0250
+#&gt; 0.783                      62     107    0.0007
+#&gt; 1.043                      81     136    0.0002
+#&gt; 1.304                     100     169    0.0000
+#&gt; 1.565                     114     196    0.0000
+#&gt; 1.826                     132     227    0.0000
+#&gt; 2.087                     156     263    0.0000
+#&gt; 2.348                     173     298    0.0000
+#&gt; 2.609                     191     331    0.0000</code></pre>
+</div>
+</div>
+<div class="cell" data-hash="10_rdd_cache/html/unnamed-chunk-5_33240c7f1fb65183d78eec0c36f5d1d4">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a>rdd_plot <span class="ot">&lt;-</span> <span class="fu">rdplotdensity</span>(rddd, shipping_data<span class="sc">$</span>purchase_amount, <span class="at">plotN =</span> <span class="dv">100</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="10_rdd_files/figure-html/unnamed-chunk-5-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="10_rdd_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>3- No the cut-off = 30 euros is not appropriate choice as the P-value is zero which is larger than any common alpha. Furthermore, according to the graph this cut-off value violates the continuity assumption as a random heaping appeared at this cut-off value.</p>
 
 
 
@@ -542,6 +720,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","selector":".lightbox","loop":true,"openEffect":"zoom"});</script>
 
 
 

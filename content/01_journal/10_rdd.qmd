@@ -5,3 +5,77 @@ title: "Regression Discontinuity"
 ::: callout-note
 You can delete everything in here and start fresh.
 :::
+```{R}
+coupon_data<- readRDS("D:/TU Hamburg/Semester_5/Causal Data Science for Business Analytics/Causal_Data_Science_Data/Causal_Data_Science_Data/coupon.rds")
+
+View(coupon_data)
+
+```
+
+```{R}
+library(dplyr)
+c0 <- 60
+
+bw <- 5
+
+bw1 <- c0 + c(-bw/2, bw/2)
+
+bw2 <- c0 + c(-bw*2,bw*2)
+
+bw1
+
+bw2
+
+df_bw1_below <- coupon_data %>% filter(days_since_last >= bw1[1] & days_since_last < c0)
+df_bw1_above <- coupon_data %>% filter(days_since_last >= c0 & days_since_last <= bw1[2])
+
+df_bw2_below <- coupon_data %>% filter(days_since_last >= bw2[1] & days_since_last < c0)
+df_bw2_above <- coupon_data %>% filter(days_since_last >= c0 & days_since_last <= bw2[2])
+
+
+df_bw1 <- bind_rows(df_bw1_above, df_bw1_below)
+
+df_bw2 <- bind_rows(df_bw2_above, df_bw2_below)
+
+model_bw1_below <- lm(purchase_after ~ days_since_last, data = df_bw1_below)
+model_bw1_above <- lm(purchase_after ~ days_since_last, data = df_bw1_above)
+
+model_bw2_below <- lm(purchase_after ~ days_since_last, df_bw2_below)
+model_bw2_above <- lm(purchase_after ~ days_since_last, df_bw2_above)
+
+y_b1_0 <- predict(model_bw1_below, tibble(days_since_last = c0))
+y_b1_1 <- predict(model_bw1_above, tibble(days_since_last = c0))
+
+late_b1<-y_b1_1 - y_b1_0
+
+y_b2_0 <- predict(model_bw2_below, tibble(days_since_last = c0))
+y_b2_1 <- predict(model_bw2_above, tibble(days_since_last = c0))
+
+late_b2<- y_b2_1 - y_b2_0
+
+sprintf("LATE1: %.2f", late_b1)
+sprintf("LATE2: %.2f", late_b2)
+
+
+```
+```{R}
+shipping_data<- readRDS("D:/TU Hamburg/Semester_5/Causal Data Science for Business Analytics/Causal_Data_Science_Data/Causal_Data_Science_Data/shipping.rds")
+
+View(shipping_data)
+
+```
+
+```{R}
+library(rddensity)
+
+c1 = 30
+
+rddd <- rddensity(shipping_data$purchase_amount, c = c1)
+summary(rddd)
+
+
+```
+```{R}
+rdd_plot <- rdplotdensity(rddd, shipping_data$purchase_amount, plotN = 100)
+```
+3- No the cut-off = 30 euros is not appropriate choice as the P-value is zero which is larger than any common alpha. Furthermore, according to the graph this cut-off value violates the continuity assumption as a random heaping appeared at this cut-off value.
