@@ -5,3 +5,55 @@ title: "Instrumental Variables"
 ::: callout-note
 You can delete everything in here and start fresh.
 :::
+
+```{R}
+
+relationship_data<- readRDS("D:/TU Hamburg/Semester_5/Causal Data Science for Business Analytics/Causal_Data_Science_Data/Causal_Data_Science_Data/rand_enc.rds")
+
+View(relationship_data)
+
+```
+
+```{R}
+library(dagitty)
+library(ggdag)
+library(ggplot2)
+# Instrumental Variable Estimation - Application
+iv_app_expl <- dagify(
+  Y ~ D,
+  Y ~ U,
+  D ~ U,
+  D ~ Z,
+  exposure = "D",
+  latent = "U",
+  outcome = "Y",
+  coords = list(x = c(U = 1, D = 0, Y = 2, Z = -1),
+                y = c(U = 1, D = 0, Y = 0, Z = 0)),
+  labels = c("D" = "used_ftr", 
+             "Y" = "time_spent", 
+             "U" = "willingness",
+             "Z" = "rand_enc")
+)
+ggdag(iv_app_expl, text = T) +
+  guides(color = "none") +
+  geom_dag_text(color = "white") +
+  geom_dag_edges(edge_color = "white") +
+  geom_dag_label_repel(aes(label = label))
+```
+```{R}
+naive_biased_model <- lm(time_spent ~ used_ftr, data = relationship_data)
+summary(naive_biased_model)
+```
+```{R}
+cor(relationship_data) %>% round(2)
+```
+3- It is shown from the correlation matrix that the rand_enc has a positively correlated with the used filter by 0.2, which shows that the people with willingness or motivation tends to use the app more time. Additionally the used filter is directly proportional with the time_spent on the app by 0.71.
+
+```{R}
+library(estimatr)
+
+model_iv <- iv_robust(time_spent ~ used_ftr | rand_enc, data = relationship_data)
+summary(model_iv)
+
+```
+4- I considered it biased, as the influence of the rand_enc which tests the unmeasured willingness to use the app was not integrated before. Since the estimate value decreased with the IV estimate, I consider the naive estimate is upward biased.
